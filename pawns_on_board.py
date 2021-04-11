@@ -19,12 +19,13 @@ class Pawn_W(Pieces):
     def __init__(self, image, pos):
         super(Pawn_W, self).__init__(image, pos)
 
-    def update(self):
-        if self.rect.collidepoint(pg.mouse.get_pos()):
-            for click in pg.event.get():
-                if click.type == pg.MOUSEBUTTONDOWN:
-                    coord = pg.mouse.get_pos()
-                    self.rect.center = get_coord(coord)
+    def update(self, coord):
+        if self.rect.collidepoint(coord):
+            print("Второй клик")
+            pos = pg.mouse.get_pos()
+            print(get_coord(pos))
+            self.rect.center = get_coord(pos)
+
 
 
 # class King_W(Pieces):
@@ -62,7 +63,7 @@ class Pawn_W(Pieces):
 #             self.rect.x = 400
 
 def get_coord(pos):
-    return (pos[0] % 100 * 100 + 50, pos[0] % 100 * 100 + 50)
+    return (pos[0] // 100 * 100 + 50, pos[1] // 100 * 100 + 50)
 
 # def motion():
 #     if event.type == pg.MOUSEBUTTONDOWN:
@@ -98,14 +99,24 @@ for i in range(8):
 
 running = True
 
+flag = False
+
 while running:
     clock.tick(FPS)
     for event in pg.event.get():
         if event.type == pg.QUIT:
             running = False
+        elif event.type == pg.KEYDOWN:
+            if event.key == pg.K_ESCAPE:
+                running = False
         elif event.type == pg.MOUSEBUTTONDOWN:
-
-
+            if flag == True:
+                all_sprites.update(coord)
+                flag = False
+            if flag == False:
+                print("Первый клик")
+                coord = pg.mouse.get_pos()
+                flag = True
     screen.fill((255, 255, 255))
     screen.blit(board, board_rect)
     all_sprites.draw(screen)
